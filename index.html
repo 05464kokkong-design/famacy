@@ -1,0 +1,2424 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ระบบเบิกยาและเวชภัณฑ์ออนไลน์ รพ.สต.บ้านโคกก่องใหญ่</title>
+  <style>
+    :root {
+      --bg: #edf7ff;
+      --surface: #ffffff;
+      --line: #cfe3fb;
+      --text: #10223c;
+      --muted: #667085;
+      --primary: #1677d2;
+      --primary-dark: #0b4f9f;
+      --blue: #2563eb;
+      --cyan: #0891b2;
+      --amber: #b45309;
+      --red: #b42318;
+      --green-soft: #dff7ef;
+      --blue-soft: #e8f0ff;
+      --amber-soft: #fff3d6;
+      --red-soft: #fee4e2;
+      --shadow: 0 20px 55px rgba(37, 99, 235, .12);
+      --radius: 8px;
+      --sidebar: 250px;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 20px;
+      background: rgba(255, 255, 255, .96);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      font-weight: 800;
+      font-size: 24px;
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: calc(100vh - 68px);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 68px;
+      align-self: start;
+      height: calc(100vh - 68px);
+      padding: 18px 14px;
+      background: #ffffff;
+      border-right: 1px solid var(--line);
+      overflow-y: auto;
+    }
+
+    .nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav button {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 9px 12px;
+      color: #344054;
+      background: transparent;
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: var(--primary-dark);
+      background: #e1f1ff;
+    }
+
+    .nav .icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #eef2f7;
+      color: #344054;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .nav button.active .icon {
+      color: #fff;
+      background: var(--primary);
+    }
+
+    main {
+      min-width: 0;
+      padding: 26px;
+    }
+
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .page-head h2 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .page-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid.kpi {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 16px;
+    }
+
+    .grid.two {
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, .9fr);
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .panel,
+    .stat,
+    .approval-item {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .panel-title h3 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .panel-title .muted {
+      font-size: 13px;
+    }
+
+    .stat {
+      min-height: 132px;
+      padding: 16px;
+      display: grid;
+      align-content: space-between;
+      overflow: hidden;
+    }
+
+    .stat label {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 32px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .stat .tag {
+      width: fit-content;
+      margin-top: 10px;
+    }
+
+    .toolbar,
+    .filters,
+    .form-row {
+      display: grid;
+      gap: 12px;
+    }
+
+    .filters {
+      grid-template-columns: repeat(5, minmax(140px, 1fr));
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    .form-row {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .form-row.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form-row.one {
+      grid-template-columns: 1fr;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .field label {
+      color: #344054;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 11px;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid #cfd8e6;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 84px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, .12);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 9px 14px;
+      border-radius: 8px;
+      background: #eef2f7;
+      color: #344054;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      filter: brightness(.98);
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .btn.blue {
+      color: #fff;
+      background: var(--blue);
+    }
+
+    .btn.cyan {
+      color: #fff;
+      background: var(--cyan);
+    }
+
+    .btn.warn {
+      color: #fff;
+      background: var(--amber);
+    }
+
+    .btn.danger {
+      color: #fff;
+      background: var(--red);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border: 1px solid var(--line);
+    }
+
+    .btn.small {
+      min-height: 34px;
+      padding: 7px 10px;
+      font-size: 13px;
+    }
+
+    .btn.icon-only {
+      width: 40px;
+      padding: 0;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #edf1f7;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #475467;
+      background: #f8fafc;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .number,
+    td.number,
+    th.number {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 26px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .tag.pending { color: #854d0e; background: var(--amber-soft); }
+    .tag.approved { color: #1d4ed8; background: var(--blue-soft); }
+    .tag.dispensed { color: #047857; background: var(--green-soft); }
+    .tag.rejected { color: #b42318; background: var(--red-soft); }
+    .tag.low { color: #b42318; background: var(--red-soft); }
+    .tag.normal { color: #047857; background: var(--green-soft); }
+    .tag.neutral { color: #475467; background: #eef2f7; }
+
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      background: #e7edf5;
+      overflow: hidden;
+      min-width: 120px;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--blue));
+    }
+
+    .request-lines {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .request-line {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) 110px 130px 42px;
+      gap: 10px;
+      align-items: end;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .stock-note {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .approval-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .approval-item {
+      padding: 14px;
+      box-shadow: none;
+    }
+
+    .approval-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .approval-head h3 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .line-table {
+      min-width: 650px;
+    }
+
+    .empty {
+      padding: 22px;
+      color: var(--muted);
+      text-align: center;
+      border: 1px dashed #ccd6e3;
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 60;
+      display: grid;
+      gap: 8px;
+      max-width: min(420px, calc(100vw - 40px));
+    }
+
+    .toast-item {
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #fff;
+      background: #263244;
+      box-shadow: var(--shadow);
+    }
+
+    .toast-item.ok { background: var(--primary); }
+    .toast-item.error { background: var(--red); }
+    .toast-item.warn { background: var(--amber); }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(15, 23, 42, .48);
+    }
+
+    .modal {
+      width: min(760px, 100%);
+      max-height: min(90vh, 820px);
+      overflow: auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 26px 70px rgba(15, 23, 42, .2);
+    }
+
+    .modal header,
+    .modal footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal footer {
+      border-top: 1px solid var(--line);
+      border-bottom: 0;
+    }
+
+    .modal h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+
+    .mobile-toggle {
+      display: none;
+    }
+
+    .sync-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding: 5px 10px;
+      color: #475467;
+      background: #eef2f7;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    .auth-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 6px 11px;
+      color: #0b4f9f;
+      background: #e1f1ff;
+      border: 1px solid #b9dcff;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .dashboard-banner {
+      overflow: hidden;
+      padding: 22px;
+      margin-bottom: 16px;
+      border: 1px solid #b9dcff;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(219, 239, 255, .98), rgba(255, 255, 255, .96) 54%, rgba(204, 244, 255, .92)),
+        linear-gradient(90deg, #0ea5e9, #22c55e);
+      box-shadow: 0 22px 60px rgba(37, 99, 235, .16);
+    }
+
+    .dashboard-banner h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .dashboard-banner p {
+      margin: 6px 0 0;
+      color: #475467;
+      max-width: 780px;
+    }
+
+    .stat.accent-blue {
+      background: linear-gradient(160deg, #ffffff, #e7f3ff);
+      border-color: #b9dcff;
+    }
+
+    .stat.accent-cyan {
+      background: linear-gradient(160deg, #ffffff, #dcfaff);
+      border-color: #a7e8f2;
+    }
+
+    .stat.accent-green {
+      background: linear-gradient(160deg, #ffffff, #e7fbf0);
+      border-color: #b7efd0;
+    }
+
+    .stat.accent-gold {
+      background: linear-gradient(160deg, #ffffff, #fff4d6);
+      border-color: #f5d982;
+    }
+
+    .dashboard-panel {
+      border-color: #bfdcff;
+      box-shadow: 0 22px 55px rgba(37, 99, 235, .11);
+    }
+
+    .report-print-title {
+      display: none;
+    }
+
+    @media (max-width: 1100px) {
+      .grid.kpi,
+      .grid.three {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .grid.two {
+        grid-template-columns: 1fr;
+      }
+      .filters {
+        grid-template-columns: repeat(3, minmax(150px, 1fr));
+      }
+      .form-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        height: auto;
+        min-height: 64px;
+        padding: 10px 12px;
+        align-items: flex-start;
+      }
+      .brand h1 {
+        font-size: 15px;
+      }
+      .brand p,
+      .sync-state {
+        display: none;
+      }
+      .mobile-toggle {
+        display: inline-flex;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        bottom: 0;
+        z-index: 40;
+        width: min(290px, 86vw);
+        height: calc(100vh - 64px);
+        transform: translateX(-104%);
+        transition: transform .2s ease;
+        box-shadow: var(--shadow);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      main {
+        padding: 18px 12px 28px;
+      }
+      .page-head {
+        display: grid;
+      }
+      .page-head h2 {
+        font-size: 23px;
+      }
+      .grid.kpi,
+      .grid.three,
+      .filters,
+      .form-row,
+      .form-row.two {
+        grid-template-columns: 1fr;
+      }
+      .request-line {
+        grid-template-columns: 1fr;
+      }
+      .top-actions select {
+        max-width: 145px;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+      .topbar,
+      .sidebar,
+      .page-head,
+      .filters,
+      .actions,
+      .toast,
+      .modal-backdrop {
+        display: none !important;
+      }
+      .layout {
+        display: block;
+      }
+      main {
+        padding: 0;
+      }
+      .panel {
+        border: 0;
+        box-shadow: none;
+        padding: 0;
+      }
+      .report-print-title {
+        display: block;
+        margin-bottom: 14px;
+        text-align: center;
+      }
+      .table-wrap {
+        border: 0;
+        overflow: visible;
+      }
+      table {
+        min-width: 0;
+        font-size: 12px;
+      }
+      th, td {
+        padding: 6px;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <button class="btn icon-only ghost mobile-toggle" id="menuToggle" title="เมนู">=</button>
+    <div class="brand">
+      <div class="brand-mark">+</div>
+      <div>
+        <h1>ระบบเบิกยาและเวชภัณฑ์ออนไลน์</h1>
+        <p>โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านโคกก่องใหญ่</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="sync-state" id="syncState">Local</span>
+      <span class="auth-chip is-hidden" id="authChip"></span>
+      <select id="activeUser" title="ผู้ใช้งาน"></select>
+      <button class="btn small blue" id="loginBtn" type="button">Log in</button>
+      <button class="btn small ghost is-hidden" id="logoutBtn" type="button">Log out</button>
+      <button class="btn small ghost" id="reloadBtn" type="button">โหลดข้อมูล</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <nav class="nav" id="nav">
+        <button data-view="dashboard" class="active"><span class="icon">D</span><span>Dashboard</span></button>
+        <button data-view="request" data-protected="true"><span class="icon">+</span><span>บันทึกเบิก</span></button>
+        <button data-view="requests" data-protected="true"><span class="icon">L</span><span>รายการคำขอ</span></button>
+        <button data-view="approval" data-protected="true"><span class="icon">A</span><span>อนุมัติและจ่าย</span></button>
+        <button data-view="inventory" data-protected="true"><span class="icon">S</span><span>คลังยา</span></button>
+        <button data-view="reports" data-protected="true"><span class="icon">R</span><span>รายงาน</span></button>
+        <button data-view="settings" data-protected="true"><span class="icon">C</span><span>ตั้งค่า</span></button>
+      </nav>
+    </aside>
+
+    <main id="main"></main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div id="modalRoot"></div>
+
+  <script>
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxeY6C_XMs7qgT8CKV9DLK65hFAK-j4Dw6EuYjJhc7lU3TIvcF_JcbNWcyvWwmqi5jz/exec";
+    const STORAGE_KEY = "khok_kong_med_requisition_v1";
+    const AUTH_SESSION_KEY = "khok_kong_med_auth_session_v1";
+    const STATUSES = {
+      pending: "รออนุมัติ",
+      approved: "อนุมัติแล้ว",
+      dispensed: "จ่ายแล้ว",
+      rejected: "ไม่อนุมัติ"
+    };
+
+    const state = {
+      view: "dashboard",
+      db: null,
+      activeUserId: "",
+      session: null,
+      requestLines: [],
+      requestDraft: {},
+      requestFilters: {},
+      reportFilters: {},
+      editingItemId: ""
+    };
+
+    const today = () => new Date().toISOString().slice(0, 10);
+    const nowIso = () => new Date().toISOString();
+    const uid = prefix => `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+    const money = n => Number(n || 0).toLocaleString("th-TH");
+    const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[ch]));
+    const toNumber = value => Number(value || 0);
+    const clone = value => JSON.parse(JSON.stringify(value));
+
+    function seedDatabase() {
+      const departments = [];
+      const users = [];
+      const items = [];
+      const requisitions = [];
+      const requisitionItems = [];
+      const stockMovements = [];
+      return { departments, users, items, requisitions, requisitionItems, stockMovements };
+    }
+
+    function normalizeDb(db) {
+      const base = seedDatabase();
+      const merged = { ...base, ...(db || {}) };
+      merged.items = (merged.items || []).map(item => ({
+        ...item,
+        stockQty: toNumber(item.stockQty),
+        minStock: toNumber(item.minStock)
+      }));
+      merged.requisitionItems = (merged.requisitionItems || []).map(line => ({
+        ...line,
+        requestQty: toNumber(line.requestQty),
+        approvedQty: toNumber(line.approvedQty),
+        dispensedQty: toNumber(line.dispensedQty)
+      }));
+      if (!db || !db.authUsers) delete merged.authUsers;
+      return merged;
+    }
+
+    function summarizeDashboardDb(db) {
+      const month = today().slice(0, 7);
+      const monthReqs = (db.requisitions || []).filter(req => String(req.requestDate || "").slice(0, 7) === month);
+      const lowItems = (db.items || []).filter(item => toNumber(item.stockQty) <= toNumber(item.minStock));
+      const usedMap = {};
+      (db.requisitionItems || []).forEach(line => {
+        const req = (db.requisitions || []).find(row => row.requisitionId === line.requisitionId);
+        if (!req || req.status !== STATUSES.dispensed) return;
+        usedMap[line.itemId] = (usedMap[line.itemId] || 0) + toNumber(line.dispensedQty);
+      });
+      const topUsed = Object.entries(usedMap)
+        .map(([itemId, qty]) => ({ ...(db.items || []).find(item => item.itemId === itemId), qty }))
+        .sort((a, b) => b.qty - a.qty)
+        .slice(0, 5);
+      return {
+        monthReqCount: monthReqs.length,
+        pendingCount: (db.requisitions || []).filter(req => req.status === STATUSES.pending).length,
+        dispensedMonthCount: monthReqs.filter(req => req.status === STATUSES.dispensed).length,
+        lowItems,
+        topUsed,
+        recentCount: (db.requisitions || []).length
+      };
+    }
+
+    function privateDb(db) {
+      const clean = clone(db);
+      delete clean.authUsers;
+      clean.dashboardStats = summarizeDashboardDb(db);
+      return clean;
+    }
+
+    function publicDb(db) {
+      return {
+        departments: [],
+        users: [],
+        items: db.items || [],
+        requisitions: [],
+        requisitionItems: [],
+        stockMovements: [],
+        dashboardStats: summarizeDashboardDb(db)
+      };
+    }
+
+    async function hashPassword(password) {
+      const bytes = new TextEncoder().encode(password || "");
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+    }
+
+    function localLoad() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) {
+        const seeded = seedDatabase();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+        return seeded;
+      }
+      return normalizeDb(JSON.parse(saved));
+    }
+
+    function localSave(db) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+      return db;
+    }
+
+    function getUser(userId = state.activeUserId) {
+      return state.db.users.find(user => user.userId === userId) || state.db.users[0] || {};
+    }
+
+    function getDepartment(departmentId) {
+      return state.db.departments.find(dep => dep.departmentId === departmentId) || {};
+    }
+
+    function getItem(itemId) {
+      return state.db.items.find(item => item.itemId === itemId) || {};
+    }
+
+    function getReqLines(requisitionId) {
+      return state.db.requisitionItems.filter(line => line.requisitionId === requisitionId);
+    }
+
+    function captureRequestDraft() {
+      const requester = document.getElementById("requesterId");
+      if (!requester) return;
+      state.requestDraft = {
+        requesterId: requester.value,
+        departmentId: document.getElementById("departmentId")?.value || "",
+        requestDate: document.getElementById("requestDate")?.value || today(),
+        reason: document.getElementById("reason")?.value || ""
+      };
+    }
+
+    function captureRequestLines() {
+      document.querySelectorAll(".request-line").forEach(row => {
+        const line = state.requestLines.find(item => item.rowId === row.dataset.row);
+        if (!line) return;
+        line.itemId = row.querySelector('[data-line-field="itemId"]')?.value || "";
+        line.requestQty = toNumber(row.querySelector('[data-line-field="requestQty"]')?.value || 0);
+      });
+    }
+
+    async function apiCall(action, payload = {}) {
+      if (window.google && google.script && google.script.run) {
+        document.getElementById("syncState").textContent = "GAS";
+        return new Promise((resolve, reject) => {
+          google.script.run
+            .withSuccessHandler(resolve)
+            .withFailureHandler(err => reject(new Error(err.message || err)))
+            .appApi({ action, payload });
+        });
+      }
+
+      if (GAS_WEB_APP_URL) {
+        document.getElementById("syncState").textContent = "Web App";
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action, payload })
+        });
+        const result = await response.json();
+        if (!result.ok) throw new Error(result.error || "ไม่สามารถเชื่อมต่อ GAS");
+        return result.data;
+      }
+
+      document.getElementById("syncState").textContent = "Local";
+      return localApi(action, payload);
+    }
+
+    async function localApi(action, payload) {
+      const db = localLoad();
+      if (action === "getInitialData") return state.session ? privateDb(db) : publicDb(db);
+
+      if (action === "login") {
+        if (!(db.authUsers || []).length) {
+          throw new Error("โหมด Local ไม่มีข้อมูลผู้ใช้ กรุณาเชื่อมต่อ GAS/GoogleSheet เพื่อเข้าสู่ระบบ");
+        }
+        const username = String(payload.username || "").trim();
+        const passwordHash = await hashPassword(payload.password || "");
+        const authUser = (db.authUsers || []).find(user =>
+          String(user.username).toLowerCase() === username.toLowerCase() &&
+          String(user.active).toUpperCase() !== "FALSE"
+        );
+        if (!authUser || String(authUser.passwordHash).toLowerCase() !== passwordHash) {
+          throw new Error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+        }
+        return {
+          token: uid("SESS"),
+          username: authUser.username,
+          displayName: authUser.displayName || authUser.username,
+          role: authUser.role || "user",
+          loggedInAt: nowIso()
+        };
+      }
+
+      if (!state.session && action !== "resetDemoData") {
+        throw new Error("กรุณา Log in ก่อนดำเนินการ");
+      }
+      const actor = payload.actorName || getUser(payload.actorId || state.activeUserId).fullName || "Local";
+
+      if (action === "createRequisition") {
+        const requester = db.users.find(user => user.userId === payload.requesterId);
+        const department = db.departments.find(dep => dep.departmentId === payload.departmentId);
+        if (!requester || !department) throw new Error("ข้อมูลผู้เบิกหรือหน่วยงานไม่ครบ");
+        const lines = (payload.items || []).filter(line => line.itemId && toNumber(line.requestQty) > 0);
+        if (!lines.length) throw new Error("ต้องมีรายการเบิกอย่างน้อย 1 รายการ");
+        const requisitionId = uid("REQ");
+        const requestNo = `REQ-${payload.requestDate.replaceAll("-", "")}-${String(db.requisitions.length + 1).padStart(3, "0")}`;
+        db.requisitions.unshift({
+          requisitionId,
+          requestNo,
+          requesterId: requester.userId,
+          requesterName: requester.fullName,
+          departmentId: department.departmentId,
+          departmentName: department.departmentName,
+          requestDate: payload.requestDate,
+          reason: payload.reason || "",
+          status: STATUSES.pending,
+          approvalNote: "",
+          approvedBy: "",
+          approvedAt: "",
+          dispensedBy: "",
+          dispensedAt: "",
+          createdAt: nowIso(),
+          updatedAt: nowIso()
+        });
+        const warnings = [];
+        lines.forEach(raw => {
+          const item = db.items.find(row => row.itemId === raw.itemId);
+          const requestQty = toNumber(raw.requestQty);
+          if (!item) return;
+          if (requestQty > toNumber(item.stockQty)) warnings.push(`${item.itemName} คงเหลือ ${money(item.stockQty)} ${item.unit}`);
+          db.requisitionItems.push({
+            lineId: uid("LIN"),
+            requisitionId,
+            itemId: item.itemId,
+            itemName: item.itemName,
+            category: item.category,
+            unit: item.unit,
+            requestQty,
+            approvedQty: 0,
+            dispensedQty: 0,
+            note: raw.note || ""
+          });
+        });
+        localSave(db);
+        return { ...db, warnings, requisitionId, requestNo };
+      }
+
+      if (action === "approveRequisition") {
+        const req = db.requisitions.find(row => row.requisitionId === payload.requisitionId);
+        if (!req || req.status !== STATUSES.pending) throw new Error("คำขอไม่อยู่ในสถานะรออนุมัติ");
+        const lines = db.requisitionItems.filter(row => row.requisitionId === req.requisitionId);
+        (payload.lines || []).forEach(input => {
+          const line = lines.find(row => row.lineId === input.lineId);
+          if (!line) return;
+          const approvedQty = toNumber(input.approvedQty);
+          const item = db.items.find(row => row.itemId === line.itemId);
+          if (approvedQty > toNumber(item.stockQty)) throw new Error(`${item.itemName} คงเหลือไม่พอ`);
+          if (approvedQty > toNumber(line.requestQty)) throw new Error(`${line.itemName} อนุมัติมากกว่าจำนวนที่ขอ`);
+          line.approvedQty = approvedQty;
+        });
+        req.status = STATUSES.approved;
+        req.approvedBy = actor;
+        req.approvedAt = nowIso();
+        req.approvalNote = payload.approvalNote || "";
+        req.updatedAt = nowIso();
+        localSave(db);
+        return db;
+      }
+
+      if (action === "rejectRequisition") {
+        const req = db.requisitions.find(row => row.requisitionId === payload.requisitionId);
+        if (!req || req.status !== STATUSES.pending) throw new Error("คำขอไม่อยู่ในสถานะรออนุมัติ");
+        req.status = STATUSES.rejected;
+        req.approvedBy = actor;
+        req.approvedAt = nowIso();
+        req.approvalNote = payload.approvalNote || "ไม่อนุมัติ";
+        req.updatedAt = nowIso();
+        localSave(db);
+        return db;
+      }
+
+      if (action === "dispenseRequisition") {
+        const req = db.requisitions.find(row => row.requisitionId === payload.requisitionId);
+        if (!req || req.status !== STATUSES.approved) throw new Error("คำขอไม่อยู่ในสถานะอนุมัติแล้ว");
+        const lines = db.requisitionItems.filter(row => row.requisitionId === req.requisitionId);
+        (payload.lines || []).forEach(input => {
+          const line = lines.find(row => row.lineId === input.lineId);
+          if (!line) return;
+          const dispenseQty = toNumber(input.dispensedQty);
+          if (dispenseQty > toNumber(line.approvedQty)) throw new Error(`${line.itemName} จ่ายมากกว่าจำนวนอนุมัติ`);
+          const item = db.items.find(row => row.itemId === line.itemId);
+          if (dispenseQty > toNumber(item.stockQty)) throw new Error(`${item.itemName} คงเหลือไม่พอ`);
+          const before = toNumber(item.stockQty);
+          item.stockQty = before - dispenseQty;
+          item.updatedAt = nowIso();
+          line.dispensedQty = dispenseQty;
+          db.stockMovements.unshift({
+            movementId: uid("MOV"),
+            itemId: item.itemId,
+            itemName: item.itemName,
+            movementType: "OUT",
+            refId: req.requisitionId,
+            qty: -dispenseQty,
+            balanceBefore: before,
+            balanceAfter: item.stockQty,
+            note: `จ่ายตามคำขอ ${req.requestNo}`,
+            createdBy: actor,
+            createdAt: nowIso()
+          });
+        });
+        req.status = STATUSES.dispensed;
+        req.dispensedBy = actor;
+        req.dispensedAt = nowIso();
+        req.updatedAt = nowIso();
+        localSave(db);
+        return db;
+      }
+
+      if (action === "saveItem") {
+        const item = { ...payload.item };
+        if (!item.itemName || !item.category || !item.unit) throw new Error("กรอกข้อมูลรายการให้ครบ");
+        if (item.itemId) {
+          const found = db.items.find(row => row.itemId === item.itemId);
+          if (!found) throw new Error("ไม่พบรายการสินค้า");
+          Object.assign(found, item, {
+            stockQty: toNumber(item.stockQty),
+            minStock: toNumber(item.minStock),
+            updatedAt: nowIso()
+          });
+        } else {
+          item.itemId = uid("ITM");
+          item.createdAt = nowIso();
+          item.updatedAt = nowIso();
+          item.status = item.status || "ใช้งาน";
+          item.stockQty = toNumber(item.stockQty);
+          item.minStock = toNumber(item.minStock);
+          db.items.unshift(item);
+        }
+        localSave(db);
+        return db;
+      }
+
+      if (action === "importItems") {
+        const items = (payload.items || []).filter(item => item.itemName);
+        if (!items.length) throw new Error("ไม่พบข้อมูลสำหรับนำเข้า");
+        let added = 0;
+        let updated = 0;
+        items.forEach(input => {
+          const found = db.items.find(item =>
+            (input.itemCode && item.itemCode === input.itemCode) ||
+            item.itemName === input.itemName
+          );
+          const clean = {
+            itemCode: input.itemCode || "",
+            itemName: input.itemName,
+            category: input.category || "ยา",
+            unit: input.unit || "หน่วย",
+            stockQty: toNumber(input.stockQty),
+            minStock: toNumber(input.minStock),
+            status: input.status || "ใช้งาน",
+            note: input.note || "",
+            updatedAt: nowIso()
+          };
+          if (found) {
+            Object.assign(found, clean);
+            updated++;
+          } else {
+            db.items.unshift({ itemId: uid("ITM"), ...clean, createdAt: nowIso() });
+            added++;
+          }
+        });
+        localSave(db);
+        return { ...privateDb(db), importSummary: { added, updated, total: items.length } };
+      }
+
+      if (action === "adjustStock") {
+        const item = db.items.find(row => row.itemId === payload.itemId);
+        if (!item) throw new Error("ไม่พบรายการสินค้า");
+        const before = toNumber(item.stockQty);
+        const qty = toNumber(payload.qty);
+        const after = payload.mode === "set" ? qty : before + qty;
+        if (after < 0) throw new Error("ยอดคงเหลือติดลบไม่ได้");
+        item.stockQty = after;
+        item.updatedAt = nowIso();
+        db.stockMovements.unshift({
+          movementId: uid("MOV"),
+          itemId: item.itemId,
+          itemName: item.itemName,
+          movementType: payload.mode === "set" ? "ADJUST" : (qty >= 0 ? "IN" : "OUT"),
+          refId: payload.refId || "",
+          qty: payload.mode === "set" ? after - before : qty,
+          balanceBefore: before,
+          balanceAfter: after,
+          note: payload.note || "ปรับยอดคลัง",
+          createdBy: actor,
+          createdAt: nowIso()
+        });
+        localSave(db);
+        return db;
+      }
+
+      if (action === "resetDemoData") {
+        const seeded = seedDatabase();
+        localSave(seeded);
+        return privateDb(seeded);
+      }
+
+      throw new Error(`ไม่รองรับ action: ${action}`);
+    }
+
+    function statusClass(status) {
+      if (status === STATUSES.pending) return "pending";
+      if (status === STATUSES.approved) return "approved";
+      if (status === STATUSES.dispensed) return "dispensed";
+      if (status === STATUSES.rejected) return "rejected";
+      return "neutral";
+    }
+
+    function setDb(db) {
+      state.db = normalizeDb(db);
+      if (!state.activeUserId && state.db.users.length) state.activeUserId = state.db.users[0].userId;
+      renderUserSelect();
+      renderAuthControls();
+    }
+
+    function renderUserSelect() {
+      const select = document.getElementById("activeUser");
+      if (!select) return;
+      select.innerHTML = state.db.users
+        .filter(user => String(user.active).toUpperCase() !== "FALSE")
+        .map(user => `<option value="${esc(user.userId)}">${esc(user.fullName)}</option>`)
+        .join("");
+      select.value = state.activeUserId;
+      select.classList.toggle("is-hidden", !state.session || !state.db.users.length);
+    }
+
+    function renderAuthControls() {
+      document.querySelectorAll("[data-protected='true']").forEach(node => {
+        node.classList.toggle("is-hidden", !state.session);
+      });
+      const loginBtn = document.getElementById("loginBtn");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const chip = document.getElementById("authChip");
+      if (loginBtn) loginBtn.classList.toggle("is-hidden", !!state.session);
+      if (logoutBtn) logoutBtn.classList.toggle("is-hidden", !state.session);
+      if (chip) {
+        chip.textContent = state.session ? `${state.session.displayName || state.session.username}` : "";
+        chip.classList.toggle("is-hidden", !state.session);
+      }
+      renderUserSelect();
+    }
+
+    function ensureLoggedIn() {
+      if (state.session) return true;
+      state.view = "dashboard";
+      openLoginModal();
+      render();
+      return false;
+    }
+
+    function render() {
+      if (state.view !== "dashboard" && !state.session) state.view = "dashboard";
+      renderAuthControls();
+      document.querySelectorAll("#nav button").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.view === state.view);
+      });
+      const views = {
+        dashboard: renderDashboard,
+        request: renderRequestForm,
+        requests: renderRequests,
+        approval: renderApproval,
+        inventory: renderInventory,
+        reports: renderReports,
+        settings: renderSettings
+      };
+      views[state.view]();
+    }
+
+    function renderPageHead(title, subtitle = "", actions = "") {
+      return `
+        <section class="page-head">
+          <div>
+            <h2>${esc(title)}</h2>
+            ${subtitle ? `<p>${esc(subtitle)}</p>` : ""}
+          </div>
+          <div class="actions">${actions}</div>
+        </section>
+      `;
+    }
+
+    function computeStats() {
+      if (state.db.dashboardStats) {
+        return {
+          monthReqs: { length: toNumber(state.db.dashboardStats.monthReqCount) },
+          pending: toNumber(state.db.dashboardStats.pendingCount),
+          dispensed: toNumber(state.db.dashboardStats.dispensedMonthCount),
+          lowItems: state.db.dashboardStats.lowItems || [],
+          topUsed: state.db.dashboardStats.topUsed || []
+        };
+      }
+      const month = today().slice(0, 7);
+      const monthReqs = state.db.requisitions.filter(req => String(req.requestDate || "").slice(0, 7) === month);
+      const pending = state.db.requisitions.filter(req => req.status === STATUSES.pending).length;
+      const dispensed = monthReqs.filter(req => req.status === STATUSES.dispensed).length;
+      const lowItems = state.db.items.filter(item => toNumber(item.stockQty) <= toNumber(item.minStock));
+      const usedMap = {};
+      state.db.requisitionItems.forEach(line => {
+        const req = state.db.requisitions.find(row => row.requisitionId === line.requisitionId);
+        if (!req || req.status !== STATUSES.dispensed) return;
+        usedMap[line.itemId] = (usedMap[line.itemId] || 0) + toNumber(line.dispensedQty);
+      });
+      const topUsed = Object.entries(usedMap)
+        .map(([itemId, qty]) => ({ ...getItem(itemId), qty }))
+        .sort((a, b) => b.qty - a.qty)
+        .slice(0, 5);
+      return { monthReqs, pending, dispensed, lowItems, topUsed };
+    }
+
+    function renderDashboard() {
+      const stats = computeStats();
+      const lowRows = stats.lowItems
+        .slice(0, 7)
+        .map(item => `
+          <tr>
+            <td>${esc(item.itemName)}<div class="muted">${esc(item.category)} / ${esc(item.unit)}</div></td>
+            <td class="number">${money(item.stockQty)}</td>
+            <td class="number">${money(item.minStock)}</td>
+            <td><span class="tag low">ใกล้หมด</span></td>
+          </tr>
+        `).join("");
+      const topRows = stats.topUsed.map((item, index) => {
+        const max = Math.max(...stats.topUsed.map(row => row.qty), 1);
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${esc(item.itemName || "-")}</td>
+            <td class="number">${money(item.qty)} ${esc(item.unit || "")}</td>
+            <td><div class="progress"><span style="width:${Math.max(8, (item.qty / max) * 100)}%"></span></div></td>
+          </tr>
+        `;
+      }).join("");
+      const recentRows = state.session ? state.db.requisitions.slice(0, 7).map(req => `
+        <tr>
+          <td><strong>${esc(req.requestNo)}</strong><div class="muted">${esc(req.requestDate)}</div></td>
+          <td>${esc(req.requesterName)}<div class="muted">${esc(req.departmentName)}</div></td>
+          <td><span class="tag ${statusClass(req.status)}">${esc(req.status)}</span></td>
+          <td class="number">${getReqLines(req.requisitionId).length}</td>
+        </tr>
+      `).join("") : "";
+      const requestAction = state.session
+        ? `<button class="btn primary" data-go="request">+ บันทึกเบิก</button>`
+        : `<button class="btn blue" id="loginFromDashboard" type="button">Log in</button>`;
+      const recentPanel = state.session
+        ? `<div class="table-wrap"><table><thead><tr><th>เลขที่คำขอ</th><th>ผู้เบิก</th><th>สถานะ</th><th class="number">รายการ</th></tr></thead><tbody>${recentRows}</tbody></table></div>`
+        : `<div class="empty">Log in เพื่อดูรายการคำขอเบิกจ่าย</div>`;
+
+      document.getElementById("main").innerHTML = `
+        ${renderPageHead("Dashboard", "ภาพรวมคลังยาและการเบิกจ่ายสำหรับการบริหารเวชภัณฑ์", requestAction)}
+        <section class="dashboard-banner">
+          <h3>โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านโคกก่องใหญ่</h3>
+          <p>ภาพรวมพร้อมใช้งานเสมอ แสดงยอดสำคัญ รายการใกล้หมด และแนวโน้มการใช้ เพื่อช่วยตัดสินใจได้รวดเร็ว</p>
+        </section>
+        <section class="grid kpi">
+          <article class="stat accent-blue"><label>คำขอเดือนนี้</label><strong>${money(stats.monthReqs.length)}</strong><span class="tag neutral">รายการ</span></article>
+          <article class="stat accent-gold"><label>รออนุมัติ</label><strong>${money(stats.pending)}</strong><span class="tag pending">รอดำเนินการ</span></article>
+          <article class="stat accent-green"><label>จ่ายแล้วเดือนนี้</label><strong>${money(stats.dispensed)}</strong><span class="tag dispensed">เสร็จสิ้น</span></article>
+          <article class="stat accent-cyan"><label>ใกล้หมด</label><strong>${money(stats.lowItems.length)}</strong><span class="tag low">ต่ำกว่าขั้นต่ำ</span></article>
+        </section>
+
+        <section class="grid two">
+          <div class="panel dashboard-panel">
+            <div class="panel-title"><h3>รายการใช้มากที่สุด</h3><span class="muted">จากรายการจ่ายแล้ว</span></div>
+            ${topRows ? `<div class="table-wrap"><table><thead><tr><th>#</th><th>รายการ</th><th class="number">จำนวน</th><th>สัดส่วน</th></tr></thead><tbody>${topRows}</tbody></table></div>` : `<div class="empty">ยังไม่มีข้อมูลการจ่าย</div>`}
+          </div>
+          <div class="panel dashboard-panel">
+            <div class="panel-title"><h3>รายการใกล้หมด</h3><span class="muted">${money(stats.lowItems.length)} รายการ</span></div>
+            ${lowRows ? `<div class="table-wrap"><table><thead><tr><th>รายการ</th><th class="number">คงเหลือ</th><th class="number">ขั้นต่ำ</th><th>สถานะ</th></tr></thead><tbody>${lowRows}</tbody></table></div>` : `<div class="empty">ไม่มีรายการใกล้หมด</div>`}
+          </div>
+        </section>
+
+        <section class="panel dashboard-panel" style="margin-top:16px">
+          <div class="panel-title"><h3>รายการคำขอเบิกจ่าย</h3>${state.session ? `<button class="btn small ghost" data-go="requests">ดูทั้งหมด</button>` : ""}</div>
+          ${recentPanel}
+        </section>
+      `;
+    }
+
+    function renderRequestForm() {
+      if (!state.requestLines.length) state.requestLines = [{ rowId: uid("ROW"), itemId: "", requestQty: 1, note: "" }];
+      const user = getUser();
+      const department = getDepartment(user.departmentId);
+      const draft = {
+        requesterId: state.requestDraft.requesterId || state.activeUserId,
+        departmentId: state.requestDraft.departmentId || department.departmentId || state.db.departments[0]?.departmentId || "",
+        requestDate: state.requestDraft.requestDate || today(),
+        reason: state.requestDraft.reason || ""
+      };
+      const itemOptions = state.db.items
+        .filter(item => item.status !== "ปิดใช้งาน")
+        .map(item => `<option value="${esc(item.itemId)}">${esc(item.itemName)} (${esc(item.unit)})</option>`)
+        .join("");
+      const lines = state.requestLines.map((line, index) => {
+        const item = getItem(line.itemId);
+        const stockText = line.itemId ? `${money(item.stockQty)} ${item.unit}` : "-";
+        const low = line.itemId && toNumber(item.stockQty) <= toNumber(item.minStock);
+        return `
+          <div class="request-line" data-row="${esc(line.rowId)}">
+            <div class="field">
+              <label>รายการ</label>
+              <select data-line-field="itemId">
+                <option value="">เลือกรายการ</option>
+                ${itemOptions}
+              </select>
+            </div>
+            <div class="field">
+              <label>จำนวน</label>
+              <input data-line-field="requestQty" type="number" min="1" step="1" value="${esc(line.requestQty)}">
+            </div>
+            <div class="stock-note">
+              <span class="tag ${low ? "low" : "neutral"}">คงเหลือ ${esc(stockText)}</span>
+            </div>
+            <button class="btn icon-only ghost" type="button" data-remove-line="${esc(index)}" title="ลบรายการ">x</button>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("main").innerHTML = `
+        ${renderPageHead("บันทึกรายการเบิก", "กรอกคำขอเบิกยาและเวชภัณฑ์สำหรับหน่วยงาน", "")}
+        <form class="panel" id="requestForm">
+          <div class="form-row">
+            <div class="field">
+              <label>ชื่อผู้เบิก</label>
+              <select id="requesterId" required>
+                ${state.db.users.map(row => `<option value="${esc(row.userId)}">${esc(row.fullName)}</option>`).join("")}
+              </select>
+            </div>
+            <div class="field">
+              <label>หน่วยงาน</label>
+              <select id="departmentId" required>
+                ${state.db.departments.map(row => `<option value="${esc(row.departmentId)}">${esc(row.departmentName)}</option>`).join("")}
+              </select>
+            </div>
+            <div class="field">
+              <label>วันที่เบิก</label>
+              <input id="requestDate" type="date" value="${esc(draft.requestDate)}" required>
+            </div>
+            <div class="field">
+              <label>สถานะเริ่มต้น</label>
+              <input value="${STATUSES.pending}" disabled>
+            </div>
+          </div>
+          <div class="form-row one" style="margin-top:12px">
+            <div class="field">
+              <label>เหตุผลการเบิก</label>
+              <textarea id="reason" required>${esc(draft.reason)}</textarea>
+            </div>
+          </div>
+          <div class="panel-title" style="margin:18px 0 8px">
+            <h3>รายการเบิก</h3>
+            <button class="btn small ghost" type="button" id="addLine">+ เพิ่มรายการ</button>
+          </div>
+          <div class="request-lines" id="requestLines">${lines}</div>
+          <div class="actions" style="margin-top:18px">
+            <button class="btn primary" type="submit">ส่งคำขอ</button>
+            <button class="btn ghost" type="button" id="clearRequest">ล้างฟอร์ม</button>
+          </div>
+        </form>
+      `;
+      document.getElementById("requesterId").value = draft.requesterId;
+      document.getElementById("departmentId").value = draft.departmentId;
+      state.requestLines.forEach((line, index) => {
+        const row = document.querySelector(`[data-row="${line.rowId}"]`);
+        if (row) row.querySelector('[data-line-field="itemId"]').value = line.itemId;
+      });
+    }
+
+    function filteredRequests(filters) {
+      return state.db.requisitions.filter(req => {
+        const lines = getReqLines(req.requisitionId);
+        const keyword = String(filters.keyword || "").trim().toLowerCase();
+        const matchKeyword = !keyword || [req.requestNo, req.requesterName, req.departmentName, req.reason, ...lines.map(line => line.itemName)]
+          .join(" ")
+          .toLowerCase()
+          .includes(keyword);
+        const matchStatus = !filters.status || req.status === filters.status;
+        const matchRequester = !filters.requesterId || req.requesterId === filters.requesterId;
+        const matchCategory = !filters.category || lines.some(line => line.category === filters.category);
+        const matchStart = !filters.startDate || req.requestDate >= filters.startDate;
+        const matchEnd = !filters.endDate || req.requestDate <= filters.endDate;
+        return matchKeyword && matchStatus && matchRequester && matchCategory && matchStart && matchEnd;
+      });
+    }
+
+    function filterControls(filters, scope) {
+      const categories = [...new Set(state.db.items.map(item => item.category).filter(Boolean))];
+      return `
+        <div class="filters" data-filter-scope="${scope}">
+          <div class="field">
+            <label>ค้นหา</label>
+            <input data-filter="keyword" value="${esc(filters.keyword || "")}" placeholder="เลขที่คำขอ / ผู้เบิก / รายการ">
+          </div>
+          <div class="field">
+            <label>ตั้งแต่วันที่</label>
+            <input type="date" data-filter="startDate" value="${esc(filters.startDate || "")}">
+          </div>
+          <div class="field">
+            <label>ถึงวันที่</label>
+            <input type="date" data-filter="endDate" value="${esc(filters.endDate || "")}">
+          </div>
+          <div class="field">
+            <label>ผู้เบิก</label>
+            <select data-filter="requesterId">
+              <option value="">ทั้งหมด</option>
+              ${state.db.users.map(user => `<option value="${esc(user.userId)}" ${filters.requesterId === user.userId ? "selected" : ""}>${esc(user.fullName)}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <label>ประเภทยา/เวชภัณฑ์</label>
+            <select data-filter="category">
+              <option value="">ทั้งหมด</option>
+              ${categories.map(cat => `<option value="${esc(cat)}" ${filters.category === cat ? "selected" : ""}>${esc(cat)}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <label>สถานะ</label>
+            <select data-filter="status">
+              <option value="">ทั้งหมด</option>
+              ${Object.values(STATUSES).map(status => `<option value="${esc(status)}" ${filters.status === status ? "selected" : ""}>${esc(status)}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+      `;
+    }
+
+    function requestsTable(rows, includeActions = true) {
+      const body = rows.map(req => {
+        const lines = getReqLines(req.requisitionId);
+        const qty = lines.reduce((sum, line) => sum + toNumber(line.requestQty), 0);
+        return `
+          <tr>
+            <td><strong>${esc(req.requestNo)}</strong><div class="muted">${esc(req.requestDate)}</div></td>
+            <td>${esc(req.requesterName)}<div class="muted">${esc(req.departmentName)}</div></td>
+            <td>${esc(lines.map(line => line.itemName).join(", "))}</td>
+            <td class="number">${money(qty)}</td>
+            <td><span class="tag ${statusClass(req.status)}">${esc(req.status)}</span></td>
+            ${includeActions ? `<td><button class="btn small ghost" data-detail="${esc(req.requisitionId)}">รายละเอียด</button></td>` : ""}
+          </tr>
+        `;
+      }).join("");
+      return body ? `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>เลขที่คำขอ</th><th>ผู้เบิก</th><th>รายการ</th><th class="number">จำนวนรวม</th><th>สถานะ</th>${includeActions ? "<th></th>" : ""}</tr></thead>
+            <tbody>${body}</tbody>
+          </table>
+        </div>
+      ` : `<div class="empty">ไม่พบข้อมูล</div>`;
+    }
+
+    function renderRequests() {
+      const rows = filteredRequests(state.requestFilters);
+      document.getElementById("main").innerHTML = `
+        ${renderPageHead("รายการคำขอเบิก", "ติดตามคำขอทุกสถานะและดูรายละเอียดรายการ", `<button class="btn primary" data-go="request">+ บันทึกเบิก</button>`)}
+        <section class="panel">
+          ${filterControls(state.requestFilters, "requests")}
+          ${requestsTable(rows)}
+        </section>
+      `;
+    }
+
+    function renderApproval() {
+      const rows = state.db.requisitions.filter(req => [STATUSES.pending, STATUSES.approved].includes(req.status));
+      const cards = rows.map(req => {
+        const lines = getReqLines(req.requisitionId);
+        const lineRows = lines.map(line => {
+          const item = getItem(line.itemId);
+          const inputValue = req.status === STATUSES.pending ? line.requestQty : line.approvedQty;
+          const fieldName = req.status === STATUSES.pending ? "approvedQty" : "dispensedQty";
+          return `
+            <tr>
+              <td>${esc(line.itemName)}<div class="muted">${esc(line.category)} / ${esc(line.unit)}</div></td>
+              <td class="number">${money(line.requestQty)}</td>
+              <td class="number">${money(item.stockQty)}</td>
+              <td><input type="number" min="0" max="${esc(inputValue)}" step="1" value="${esc(inputValue)}" data-line-id="${esc(line.lineId)}" data-qty-field="${fieldName}"></td>
+            </tr>
+          `;
+        }).join("");
+        const buttons = req.status === STATUSES.pending
+          ? `<button class="btn primary" data-approve="${esc(req.requisitionId)}">อนุมัติ</button><button class="btn danger" data-reject="${esc(req.requisitionId)}">ไม่อนุมัติ</button>`
+          : `<button class="btn blue" data-dispense="${esc(req.requisitionId)}">จ่ายและตัดสต็อก</button>`;
+        return `
+          <article class="approval-item" data-approval-card="${esc(req.requisitionId)}">
+            <div class="approval-head">
+              <div>
+                <h3>${esc(req.requestNo)}</h3>
+                <div class="muted">${esc(req.requesterName)} / ${esc(req.departmentName)} / ${esc(req.requestDate)}</div>
+              </div>
+              <span class="tag ${statusClass(req.status)}">${esc(req.status)}</span>
+            </div>
+            <div class="table-wrap">
+              <table class="line-table">
+                <thead><tr><th>รายการ</th><th class="number">ขอเบิก</th><th class="number">คงเหลือ</th><th>${req.status === STATUSES.pending ? "อนุมัติ" : "จ่ายจริง"}</th></tr></thead>
+                <tbody>${lineRows}</tbody>
+              </table>
+            </div>
+            <div class="form-row one" style="margin-top:12px">
+              <div class="field"><label>หมายเหตุ</label><textarea data-approval-note>${esc(req.approvalNote || "")}</textarea></div>
+            </div>
+            <div class="actions" style="margin-top:12px">${buttons}<button class="btn ghost" data-detail="${esc(req.requisitionId)}">รายละเอียด</button></div>
+          </article>
+        `;
+      }).join("");
+
+      document.getElementById("main").innerHTML = `
+        ${renderPageHead("อนุมัติและจ่าย", "ตรวจสอบยอดคงเหลือก่อนอนุมัติและตัดสต็อกเมื่อจ่าย", "")}
+        <section class="approval-list">${cards || `<div class="empty">ไม่มีคำขอที่รอดำเนินการ</div>`}</section>
+      `;
+    }
+
+    function renderInventory() {
+      const item = state.editingItemId ? getItem(state.editingItemId) : {};
+      const rows = state.db.items.map(row => {
+        const low = toNumber(row.stockQty) <= toNumber(row.minStock);
+        return `
+          <tr>
+            <td><strong>${esc(row.itemName)}</strong><div class="muted">${esc(row.itemCode || "-")}</div></td>
+            <td>${esc(row.category)}</td>
+            <td>${esc(row.unit)}</td>
+            <td class="number">${money(row.stockQty)}</td>
+            <td class="number">${money(row.minStock)}</td>
+            <td><span class="tag ${low ? "low" : "normal"}">${low ? "ใกล้หมด" : "ปกติ"}</span></td>
+            <td>
+              <div class="actions">
+                <button class="btn small ghost" data-edit-item="${esc(row.itemId)}">แก้ไข</button>
+                <button class="btn small ghost" data-adjust-item="${esc(row.itemId)}">ปรับยอด</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+      const inventoryActions = `
+        <button class="btn cyan" id="importExcelBtn" type="button">นำเข้า Excel</button>
+        <button class="btn blue" id="importPdfBtn" type="button">นำเข้า PDF</button>
+        <button class="btn ghost" id="exportInventoryExcel" type="button">ส่งออก Excel</button>
+        <button class="btn ghost" id="exportInventoryPdf" type="button">ส่งออก PDF</button>
+        <input class="is-hidden" id="inventoryExcelFile" type="file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv">
+        <input class="is-hidden" id="inventoryPdfFile" type="file" accept=".pdf,application/pdf">
+      `;
+      document.getElementById("main").innerHTML = `
+        ${renderPageHead("คลังยาและเวชภัณฑ์", "จัดการรายการ ยอดคงเหลือ และค่าขั้นต่ำสำหรับแจ้งเตือน", inventoryActions)}
+        <section class="panel">
+          <div class="panel-title"><h3>${state.editingItemId ? "แก้ไขรายการ" : "เพิ่มรายการ"}</h3><button class="btn small ghost" id="newItem">รายการใหม่</button></div>
+          <form id="itemForm">
+            <input type="hidden" id="itemId" value="${esc(item.itemId || "")}">
+            <div class="form-row">
+              <div class="field"><label>รหัส</label><input id="itemCode" value="${esc(item.itemCode || "")}"></div>
+              <div class="field"><label>ชื่อรายการ</label><input id="itemName" value="${esc(item.itemName || "")}" required></div>
+              <div class="field"><label>ประเภท</label><select id="category" required><option value="ยา">ยา</option><option value="เวชภัณฑ์">เวชภัณฑ์</option><option value="อื่น ๆ">อื่น ๆ</option></select></div>
+              <div class="field"><label>หน่วยนับ</label><input id="unit" value="${esc(item.unit || "")}" required></div>
+            </div>
+            <div class="form-row" style="margin-top:12px">
+              <div class="field"><label>ยอดคงเหลือ</label><input id="stockQty" type="number" min="0" step="1" value="${esc(item.stockQty ?? 0)}"></div>
+              <div class="field"><label>ยอดขั้นต่ำ</label><input id="minStock" type="number" min="0" step="1" value="${esc(item.minStock ?? 0)}"></div>
+              <div class="field"><label>สถานะ</label><select id="itemStatus"><option value="ใช้งาน">ใช้งาน</option><option value="ปิดใช้งาน">ปิดใช้งาน</option></select></div>
+              <div class="field"><label>หมายเหตุ</label><input id="itemNote" value="${esc(item.note || "")}"></div>
+            </div>
+            <div class="actions" style="margin-top:14px">
+              <button class="btn primary" type="submit">บันทึกรายการ</button>
+            </div>
+          </form>
+        </section>
+        <section class="panel" style="margin-top:16px">
+          <div class="panel-title"><h3>รายการทั้งหมด</h3><span class="muted">${money(state.db.items.length)} รายการ</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>รายการ</th><th>ประเภท</th><th>หน่วย</th><th class="number">คงเหลือ</th><th class="number">ขั้นต่ำ</th><th>สถานะ</th><th></th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </section>
+      `;
+      document.getElementById("category").value = item.category || "ยา";
+      document.getElementById("itemStatus").value = item.status || "ใช้งาน";
+    }
+
+    function reportRows(filters = state.reportFilters) {
+      return filteredRequests(filters).flatMap(req => getReqLines(req.requisitionId).map(line => ({
+        requestNo: req.requestNo,
+        requestDate: req.requestDate,
+        requesterName: req.requesterName,
+        departmentName: req.departmentName,
+        itemName: line.itemName,
+        category: line.category,
+        unit: line.unit,
+        requestQty: line.requestQty,
+        approvedQty: line.approvedQty,
+        dispensedQty: line.dispensedQty,
+        status: req.status,
+        reason: req.reason
+      })));
+    }
+
+    function renderReports() {
+      const rows = reportRows();
+      const body = rows.map(row => `
+        <tr>
+          <td>${esc(row.requestNo)}<div class="muted">${esc(row.requestDate)}</div></td>
+          <td>${esc(row.requesterName)}<div class="muted">${esc(row.departmentName)}</div></td>
+          <td>${esc(row.itemName)}<div class="muted">${esc(row.category)}</div></td>
+          <td class="number">${money(row.requestQty)}</td>
+          <td class="number">${money(row.approvedQty)}</td>
+          <td class="number">${money(row.dispensedQty)}</td>
+          <td><span class="tag ${statusClass(row.status)}">${esc(row.status)}</span></td>
+        </tr>
+      `).join("");
+      document.getElementById("main").innerHTML = `
+        ${renderPageHead("รายงาน", "ค้นหา กรองข้อมูล และส่งออกสำหรับใช้รายงาน", `<button class="btn blue" id="exportExcel">ส่งออก Excel</button><button class="btn ghost" id="printPdf">พิมพ์ PDF</button>`)}
+        <section class="panel" id="reportPanel">
+          <div class="report-print-title">
+            <h2>รายงานการเบิกยาและเวชภัณฑ์</h2>
+            <p>โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านโคกก่องใหญ่</p>
+          </div>
+          ${filterControls(state.reportFilters, "reports")}
+          ${body ? `
+            <div class="table-wrap">
+              <table id="reportTable">
+                <thead><tr><th>เลขที่คำขอ</th><th>ผู้เบิก</th><th>รายการ</th><th class="number">ขอเบิก</th><th class="number">อนุมัติ</th><th class="number">จ่ายจริง</th><th>สถานะ</th></tr></thead>
+                <tbody>${body}</tbody>
+              </table>
+            </div>
+          ` : `<div class="empty">ไม่พบข้อมูลรายงาน</div>`}
+        </section>
+      `;
+    }
+
+    function renderSettings() {
+      document.getElementById("main").innerHTML = `
+        ${renderPageHead("ตั้งค่า", "สถานะการเชื่อมต่อและข้อมูลเริ่มต้น", "")}
+        <section class="grid two">
+          <div class="panel">
+            <div class="panel-title"><h3>การเชื่อมต่อ</h3><span class="tag neutral">${esc(document.getElementById("syncState").textContent)}</span></div>
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><th>โหมดข้อมูล</th><td>${esc(document.getElementById("syncState").textContent)}</td></tr>
+                  <tr><th>GAS Web App URL</th><td>${GAS_WEB_APP_URL ? esc(GAS_WEB_APP_URL) : "ยังไม่ได้ระบุในไฟล์ HTML"}</td></tr>
+                  <tr><th>จำนวนผู้ใช้</th><td>${money(state.db.users.length)}</td></tr>
+                  <tr><th>จำนวนรายการคลัง</th><td>${money(state.db.items.length)}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title"><h3>เริ่มใช้งานจริง</h3></div>
+            <div class="actions">
+              <button class="btn danger" id="resetDemo">ล้างข้อมูลทดสอบ</button>
+              <button class="btn ghost" id="downloadJson">ดาวน์โหลด JSON</button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function openDetail(requisitionId) {
+      const req = state.db.requisitions.find(row => row.requisitionId === requisitionId);
+      if (!req) return;
+      const rows = getReqLines(requisitionId).map(line => `
+        <tr>
+          <td>${esc(line.itemName)}<div class="muted">${esc(line.category)} / ${esc(line.unit)}</div></td>
+          <td class="number">${money(line.requestQty)}</td>
+          <td class="number">${money(line.approvedQty)}</td>
+          <td class="number">${money(line.dispensedQty)}</td>
+        </tr>
+      `).join("");
+      showModal(`
+        <header><h3>${esc(req.requestNo)}</h3><button class="btn icon-only ghost" data-close-modal>x</button></header>
+        <div class="modal-body">
+          <div class="grid two">
+            <div class="table-wrap">
+              <table>
+                <tbody>
+                  <tr><th>ผู้เบิก</th><td>${esc(req.requesterName)}</td></tr>
+                  <tr><th>หน่วยงาน</th><td>${esc(req.departmentName)}</td></tr>
+                  <tr><th>วันที่</th><td>${esc(req.requestDate)}</td></tr>
+                  <tr><th>สถานะ</th><td><span class="tag ${statusClass(req.status)}">${esc(req.status)}</span></td></tr>
+                  <tr><th>เหตุผล</th><td>${esc(req.reason || "-")}</td></tr>
+                  <tr><th>หมายเหตุอนุมัติ</th><td>${esc(req.approvalNote || "-")}</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>รายการ</th><th class="number">ขอ</th><th class="number">อนุมัติ</th><th class="number">จ่าย</th></tr></thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <footer><button class="btn ghost" data-close-modal>ปิด</button></footer>
+      `);
+    }
+
+    function showModal(innerHtml) {
+      document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop"><section class="modal">${innerHtml}</section></div>`;
+    }
+
+    function closeModal() {
+      document.getElementById("modalRoot").innerHTML = "";
+    }
+
+    function openLoginModal() {
+      showModal(`
+        <header><h3>Log in</h3><button class="btn icon-only ghost" data-close-modal>x</button></header>
+        <div class="modal-body">
+          <form id="loginForm">
+            <div class="form-row two">
+              <div class="field">
+                <label>Username</label>
+                <input id="loginUsername" name="username" autocomplete="username" required>
+              </div>
+              <div class="field">
+                <label>Password</label>
+                <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+              </div>
+            </div>
+          </form>
+        </div>
+        <footer><button class="btn ghost" data-close-modal>ยกเลิก</button><button class="btn blue" form="loginForm" type="submit">Log in</button></footer>
+      `);
+    }
+
+    function toast(message, type = "ok") {
+      const root = document.getElementById("toast");
+      const node = document.createElement("div");
+      node.className = `toast-item ${type}`;
+      node.textContent = message;
+      root.appendChild(node);
+      setTimeout(() => node.remove(), 4200);
+    }
+
+    async function refresh() {
+      try {
+        setDb(await apiCall("getInitialData", { sessionToken: state.session?.token || "" }));
+        render();
+      } catch (err) {
+        toast(err.message || "โหลดข้อมูลไม่สำเร็จ", "error");
+      }
+    }
+
+    async function commit(action, payload, successMessage) {
+      try {
+        const data = await apiCall(action, { ...(payload || {}), sessionToken: state.session?.token || "" });
+        setDb(data);
+        render();
+        if (successMessage) toast(successMessage, "ok");
+        return data;
+      } catch (err) {
+        toast(err.message || "ดำเนินการไม่สำเร็จ", "error");
+        throw err;
+      }
+    }
+
+    function collectCardLines(requisitionId, qtyField) {
+      const card = document.querySelector(`[data-approval-card="${requisitionId}"]`);
+      return [...card.querySelectorAll(`[data-qty-field="${qtyField}"]`)].map(input => ({
+        lineId: input.dataset.lineId,
+        [qtyField]: toNumber(input.value)
+      }));
+    }
+
+    function exportReportExcel() {
+      const rows = reportRows();
+      if (!rows.length) return toast("ไม่มีข้อมูลสำหรับส่งออก", "warn");
+      const headers = ["เลขที่คำขอ", "วันที่", "ผู้เบิก", "หน่วยงาน", "รายการ", "ประเภท", "หน่วย", "ขอเบิก", "อนุมัติ", "จ่ายจริง", "สถานะ", "เหตุผล"];
+      const body = rows.map(row => [row.requestNo, row.requestDate, row.requesterName, row.departmentName, row.itemName, row.category, row.unit, row.requestQty, row.approvedQty, row.dispensedQty, row.status, row.reason]);
+      const html = `
+        <html><head><meta charset="utf-8"></head><body>
+        <table border="1">
+          <thead><tr>${headers.map(head => `<th>${esc(head)}</th>`).join("")}</tr></thead>
+          <tbody>${body.map(cols => `<tr>${cols.map(col => `<td>${esc(col)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+        </body></html>`;
+      const blob = new Blob(["\ufeff", html], { type: "application/vnd.ms-excel;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `รายงานเบิกยา-${today()}.xls`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let value = "";
+      let quoted = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+        if (char === '"' && quoted && next === '"') {
+          value += '"';
+          i++;
+        } else if (char === '"') {
+          quoted = !quoted;
+        } else if (char === "," && !quoted) {
+          row.push(value.trim());
+          value = "";
+        } else if ((char === "\n" || char === "\r") && !quoted) {
+          if (char === "\r" && next === "\n") i++;
+          row.push(value.trim());
+          if (row.some(cell => cell !== "")) rows.push(row);
+          row = [];
+          value = "";
+        } else {
+          value += char;
+        }
+      }
+      row.push(value.trim());
+      if (row.some(cell => cell !== "")) rows.push(row);
+      return rows;
+    }
+
+    function mapInventoryHeader(header) {
+      const value = String(header || "").toLowerCase().replace(/\s+/g, "");
+      if (["itemid", "id"].includes(value)) return "itemId";
+      if (["รหัส", "รหัสรายการ", "code", "itemcode"].includes(value)) return "itemCode";
+      if (["ชื่อ", "ชื่อรายการ", "รายการ", "item", "itemname", "name"].includes(value)) return "itemName";
+      if (["ประเภท", "category", "type"].includes(value)) return "category";
+      if (["หน่วย", "หน่วยนับ", "unit"].includes(value)) return "unit";
+      if (["คงเหลือ", "ยอดคงเหลือ", "จำนวน", "stock", "stockqty", "qty"].includes(value)) return "stockQty";
+      if (["ขั้นต่ำ", "ยอดขั้นต่ำ", "min", "minstock", "minimum"].includes(value)) return "minStock";
+      if (["สถานะ", "status"].includes(value)) return "status";
+      if (["หมายเหตุ", "note", "remark"].includes(value)) return "note";
+      return "";
+    }
+
+    function rowsToInventoryObjects(rows) {
+      const headerIndex = rows.findIndex(row => row.some(cell => mapInventoryHeader(cell)));
+      if (headerIndex === -1) return [];
+      const headers = rows[headerIndex].map(mapInventoryHeader);
+      return rows.slice(headerIndex + 1).map(row => {
+        const object = {};
+        headers.forEach((field, index) => {
+          if (field) object[field] = row[index] ?? "";
+        });
+        return normalizeImportedItem(object);
+      }).filter(Boolean);
+    }
+
+    function normalizeImportedItem(row) {
+      const itemName = String(row.itemName || "").trim();
+      if (!itemName) return null;
+      return {
+        itemId: String(row.itemId || "").trim(),
+        itemCode: String(row.itemCode || "").trim(),
+        itemName,
+        category: String(row.category || "ยา").trim(),
+        unit: String(row.unit || "หน่วย").trim(),
+        stockQty: toNumber(String(row.stockQty ?? 0).replace(/,/g, "")),
+        minStock: toNumber(String(row.minStock ?? 0).replace(/,/g, "")),
+        status: String(row.status || "ใช้งาน").trim(),
+        note: String(row.note || "").trim()
+      };
+    }
+
+    async function readExcelInventory(file) {
+      const name = file.name.toLowerCase();
+      if (name.endsWith(".csv")) {
+        return rowsToInventoryObjects(parseCsv(await file.text()));
+      }
+      if (!window.XLSX) throw new Error("ไม่พบตัวอ่านไฟล์ Excel กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่");
+      const buffer = await file.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: "" });
+      return rowsToInventoryObjects(rows);
+    }
+
+    async function readPdfInventory(file) {
+      if (!window.pdfjsLib) throw new Error("ไม่พบตัวอ่านไฟล์ PDF กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่");
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      const rows = [];
+      for (let pageNo = 1; pageNo <= pdf.numPages; pageNo++) {
+        const page = await pdf.getPage(pageNo);
+        const content = await page.getTextContent();
+        const grouped = new Map();
+        content.items.forEach(item => {
+          const text = String(item.str || "").trim();
+          if (!text) return;
+          const y = Math.round(item.transform[5]);
+          if (!grouped.has(y)) grouped.set(y, []);
+          grouped.get(y).push({ x: item.transform[4], text });
+        });
+        [...grouped.entries()]
+          .sort((a, b) => b[0] - a[0])
+          .forEach(([, cells]) => {
+            rows.push(cells.sort((a, b) => a.x - b.x).map(cell => cell.text));
+          });
+      }
+      const parsed = rowsToInventoryObjects(rows);
+      if (parsed.length) return parsed;
+      const fallbackRows = rows.map(row => row.join(" ").split(/\t|,|\s{2,}/).map(cell => cell.trim()));
+      return rowsToInventoryObjects(fallbackRows);
+    }
+
+    async function importInventoryFile(file, type) {
+      if (!file) return;
+      try {
+        const items = type === "pdf" ? await readPdfInventory(file) : await readExcelInventory(file);
+        if (!items.length) throw new Error("ไม่พบคอลัมน์รายการในไฟล์");
+        const data = await commit("importItems", { items, sourceFile: file.name, actorId: state.activeUserId }, `นำเข้าข้อมูล ${items.length} รายการแล้ว`);
+        if (data.importSummary) {
+          toast(`เพิ่ม ${data.importSummary.added} / อัปเดต ${data.importSummary.updated} รายการ`, "ok");
+        }
+      } catch (err) {
+        toast(err.message || "นำเข้าข้อมูลไม่สำเร็จ", "error");
+      }
+    }
+
+    function inventoryRows() {
+      return state.db.items.map(item => [
+        item.itemCode || "",
+        item.itemName || "",
+        item.category || "",
+        item.unit || "",
+        item.stockQty || 0,
+        item.minStock || 0,
+        item.status || "",
+        item.note || ""
+      ]);
+    }
+
+    function exportInventoryExcel() {
+      const headers = ["รหัส", "ชื่อรายการ", "ประเภท", "หน่วยนับ", "ยอดคงเหลือ", "ยอดขั้นต่ำ", "สถานะ", "หมายเหตุ"];
+      const html = `
+        <html><head><meta charset="utf-8"></head><body>
+        <table border="1">
+          <thead><tr>${headers.map(head => `<th>${esc(head)}</th>`).join("")}</tr></thead>
+          <tbody>${inventoryRows().map(cols => `<tr>${cols.map(col => `<td>${esc(col)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+        </body></html>`;
+      const blob = new Blob(["\ufeff", html], { type: "application/vnd.ms-excel;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `คลังยาเวชภัณฑ์-${today()}.xls`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function exportInventoryPdf() {
+      const headers = ["รหัส", "ชื่อรายการ", "ประเภท", "หน่วย", "คงเหลือ", "ขั้นต่ำ", "สถานะ"];
+      const rows = inventoryRows();
+      const win = window.open("", "_blank");
+      if (!win) return toast("ไม่สามารถเปิดหน้าพิมพ์ PDF ได้", "error");
+      win.document.write(`
+        <html lang="th"><head><meta charset="utf-8"><title>คลังยาและเวชภัณฑ์</title>
+        <style>
+          body{font-family:"Segoe UI",Tahoma,sans-serif;color:#10223c;padding:24px}
+          h1{font-size:22px;margin:0 0 4px} p{margin:0 0 18px;color:#667085}
+          table{width:100%;border-collapse:collapse;font-size:12px}
+          th,td{border:1px solid #cfe3fb;padding:7px;text-align:left}
+          th{background:#e7f3ff}
+          .number{text-align:right}
+        </style></head><body>
+        <h1>คลังยาและเวชภัณฑ์</h1>
+        <p>โรงพยาบาลส่งเสริมสุขภาพตำบลบ้านโคกก่องใหญ่</p>
+        <table><thead><tr>${headers.map(head => `<th>${esc(head)}</th>`).join("")}</tr></thead>
+        <tbody>${rows.map(cols => `<tr>${cols.slice(0, 7).map((col, index) => `<td class="${index >= 4 && index <= 5 ? "number" : ""}">${esc(col)}</td>`).join("")}</tr>`).join("")}</tbody></table>
+        </body></html>
+      `);
+      win.document.close();
+      win.focus();
+      win.print();
+    }
+
+    function downloadJson() {
+      const blob = new Blob([JSON.stringify(state.db, null, 2)], { type: "application/json;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `khok-kong-med-requisition-${today()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    }
+
+    document.addEventListener("click", async event => {
+      const target = event.target.closest("button");
+      if (!target) return;
+
+      if (target.dataset.view) {
+        state.view = target.dataset.view;
+        document.getElementById("sidebar").classList.remove("open");
+        render();
+      }
+
+      if (target.dataset.go) {
+        state.view = target.dataset.go;
+        render();
+      }
+
+      if (target.id === "menuToggle") document.getElementById("sidebar").classList.toggle("open");
+      if (target.id === "reloadBtn") refresh();
+      if (target.id === "loginBtn" || target.id === "loginFromDashboard") openLoginModal();
+      if (target.id === "logoutBtn") {
+        state.session = null;
+        state.activeUserId = "";
+        localStorage.removeItem(AUTH_SESSION_KEY);
+        state.view = "dashboard";
+        await refresh();
+        toast("ออกจากระบบแล้ว", "ok");
+      }
+      if (target.id === "importExcelBtn") document.getElementById("inventoryExcelFile")?.click();
+      if (target.id === "importPdfBtn") document.getElementById("inventoryPdfFile")?.click();
+      if (target.id === "exportInventoryExcel") exportInventoryExcel();
+      if (target.id === "exportInventoryPdf") exportInventoryPdf();
+      if (target.id === "addLine") {
+        captureRequestDraft();
+        captureRequestLines();
+        state.requestLines.push({ rowId: uid("ROW"), itemId: "", requestQty: 1, note: "" });
+        renderRequestForm();
+      }
+      if (target.dataset.removeLine) {
+        if (state.requestLines.length <= 1) return toast("ต้องมีรายการอย่างน้อย 1 รายการ", "warn");
+        captureRequestDraft();
+        captureRequestLines();
+        state.requestLines.splice(Number(target.dataset.removeLine), 1);
+        renderRequestForm();
+      }
+      if (target.id === "clearRequest") {
+        state.requestLines = [{ rowId: uid("ROW"), itemId: "", requestQty: 1, note: "" }];
+        state.requestDraft = {};
+        renderRequestForm();
+      }
+      if (target.dataset.detail) openDetail(target.dataset.detail);
+      if (target.dataset.closeModal !== undefined) closeModal();
+
+      if (target.dataset.approve) {
+        const requisitionId = target.dataset.approve;
+        const card = document.querySelector(`[data-approval-card="${requisitionId}"]`);
+        await commit("approveRequisition", {
+          requisitionId,
+          actorId: state.activeUserId,
+          approvalNote: card.querySelector("[data-approval-note]").value,
+          lines: collectCardLines(requisitionId, "approvedQty")
+        }, "อนุมัติคำขอแล้ว");
+      }
+
+      if (target.dataset.reject) {
+        const requisitionId = target.dataset.reject;
+        const card = document.querySelector(`[data-approval-card="${requisitionId}"]`);
+        await commit("rejectRequisition", {
+          requisitionId,
+          actorId: state.activeUserId,
+          approvalNote: card.querySelector("[data-approval-note]").value || "ไม่อนุมัติ"
+        }, "บันทึกสถานะไม่อนุมัติแล้ว");
+      }
+
+      if (target.dataset.dispense) {
+        const requisitionId = target.dataset.dispense;
+        await commit("dispenseRequisition", {
+          requisitionId,
+          actorId: state.activeUserId,
+          lines: collectCardLines(requisitionId, "dispensedQty")
+        }, "จ่ายและตัดสต็อกแล้ว");
+      }
+
+      if (target.dataset.editItem) {
+        state.editingItemId = target.dataset.editItem;
+        renderInventory();
+      }
+
+      if (target.id === "newItem") {
+        state.editingItemId = "";
+        renderInventory();
+      }
+
+      if (target.dataset.adjustItem) {
+        const item = getItem(target.dataset.adjustItem);
+        showModal(`
+          <header><h3>ปรับยอด ${esc(item.itemName)}</h3><button class="btn icon-only ghost" data-close-modal>x</button></header>
+          <div class="modal-body">
+            <form id="adjustForm" data-item-id="${esc(item.itemId)}">
+              <div class="form-row two">
+                <div class="field"><label>รูปแบบ</label><select id="adjustMode"><option value="add">เพิ่ม/ลดจากยอดเดิม</option><option value="set">กำหนดยอดใหม่</option></select></div>
+                <div class="field"><label>จำนวน</label><input id="adjustQty" type="number" step="1" required></div>
+              </div>
+              <div class="form-row one" style="margin-top:12px"><div class="field"><label>หมายเหตุ</label><input id="adjustNote" value="ปรับยอดคลัง"></div></div>
+            </form>
+          </div>
+          <footer><button class="btn ghost" data-close-modal>ยกเลิก</button><button class="btn primary" form="adjustForm" type="submit">บันทึก</button></footer>
+        `);
+      }
+
+      if (target.id === "exportExcel") exportReportExcel();
+      if (target.id === "printPdf") window.print();
+      if (target.id === "downloadJson") downloadJson();
+      if (target.id === "resetDemo") {
+        await commit("resetDemoData", {}, "ล้างข้อมูลทดสอบแล้ว");
+      }
+    });
+
+    document.addEventListener("change", event => {
+      if (event.target.id === "inventoryExcelFile") {
+        importInventoryFile(event.target.files?.[0], "excel");
+        event.target.value = "";
+      }
+
+      if (event.target.id === "inventoryPdfFile") {
+        importInventoryFile(event.target.files?.[0], "pdf");
+        event.target.value = "";
+      }
+
+      if (event.target.id === "activeUser") {
+        state.activeUserId = event.target.value;
+        if (state.view === "request") renderRequestForm();
+      }
+
+      if (event.target.id === "requesterId") {
+        const user = state.db.users.find(row => row.userId === event.target.value);
+        if (user) document.getElementById("departmentId").value = user.departmentId;
+        captureRequestDraft();
+      }
+
+      if (["departmentId", "requestDate"].includes(event.target.id)) {
+        captureRequestDraft();
+      }
+
+      const lineField = event.target.dataset.lineField;
+      if (lineField) {
+        captureRequestDraft();
+        const row = event.target.closest("[data-row]");
+        const line = state.requestLines.find(item => item.rowId === row.dataset.row);
+        if (line) {
+          line[lineField] = lineField === "requestQty" ? toNumber(event.target.value) : event.target.value;
+          if (lineField === "itemId") renderRequestForm();
+        }
+      }
+
+      const filter = event.target.dataset.filter;
+      const scope = event.target.closest("[data-filter-scope]")?.dataset.filterScope;
+      if (filter && scope) {
+        const targetFilters = scope === "reports" ? state.reportFilters : state.requestFilters;
+        targetFilters[filter] = event.target.value;
+        scope === "reports" ? renderReports() : renderRequests();
+      }
+    });
+
+    document.addEventListener("input", event => {
+      if (event.target.id === "reason") {
+        captureRequestDraft();
+      }
+
+      if (event.target.dataset.lineField === "requestQty") {
+        const row = event.target.closest("[data-row]");
+        const line = state.requestLines.find(item => item.rowId === row.dataset.row);
+        if (line) line.requestQty = toNumber(event.target.value);
+      }
+
+      const filter = event.target.dataset.filter;
+      const scope = event.target.closest("[data-filter-scope]")?.dataset.filterScope;
+      if (filter === "keyword" && scope) {
+        const targetFilters = scope === "reports" ? state.reportFilters : state.requestFilters;
+        targetFilters[filter] = event.target.value;
+        clearTimeout(event.target._timer);
+        event.target._timer = setTimeout(() => scope === "reports" ? renderReports() : renderRequests(), 250);
+      }
+    });
+
+    document.addEventListener("submit", async event => {
+      event.preventDefault();
+
+      if (event.target.id === "loginForm") {
+        try {
+          const session = await apiCall("login", {
+            username: document.getElementById("loginUsername").value,
+            password: document.getElementById("loginPassword").value
+          });
+          state.session = session;
+          localStorage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+          closeModal();
+          await refresh();
+          toast("เข้าสู่ระบบแล้ว", "ok");
+        } catch (err) {
+          toast(err.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
+        }
+        return;
+      }
+
+      if (event.target.id === "requestForm") {
+        captureRequestDraft();
+        captureRequestLines();
+        const payload = {
+          requesterId: state.requestDraft.requesterId,
+          departmentId: state.requestDraft.departmentId,
+          requestDate: state.requestDraft.requestDate,
+          reason: state.requestDraft.reason,
+          items: state.requestLines.map(line => ({
+            itemId: line.itemId,
+            requestQty: line.requestQty,
+            note: line.note || ""
+          }))
+        };
+        const data = await commit("createRequisition", payload, "ส่งคำขอเบิกแล้ว");
+        if (data.warnings?.length) toast(`มีรายการเกินยอดคงเหลือ: ${data.warnings.join(", ")}`, "warn");
+        state.requestLines = [];
+        state.requestDraft = {};
+        state.view = "requests";
+        render();
+      }
+
+      if (event.target.id === "itemForm") {
+        const payload = {
+          item: {
+            itemId: document.getElementById("itemId").value,
+            itemCode: document.getElementById("itemCode").value,
+            itemName: document.getElementById("itemName").value,
+            category: document.getElementById("category").value,
+            unit: document.getElementById("unit").value,
+            stockQty: toNumber(document.getElementById("stockQty").value),
+            minStock: toNumber(document.getElementById("minStock").value),
+            status: document.getElementById("itemStatus").value,
+            note: document.getElementById("itemNote").value
+          }
+        };
+        state.editingItemId = "";
+        await commit("saveItem", payload, "บันทึกรายการคลังแล้ว");
+      }
+
+      if (event.target.id === "adjustForm") {
+        await commit("adjustStock", {
+          itemId: event.target.dataset.itemId,
+          mode: document.getElementById("adjustMode").value === "set" ? "set" : "add",
+          qty: toNumber(document.getElementById("adjustQty").value),
+          note: document.getElementById("adjustNote").value,
+          actorId: state.activeUserId
+        }, "ปรับยอดคลังแล้ว");
+        closeModal();
+      }
+    });
+
+    try {
+      state.session = JSON.parse(localStorage.getItem(AUTH_SESSION_KEY) || "null");
+    } catch (err) {
+      state.session = null;
+    }
+    refresh();
+  </script>
+</body>
+</html>
